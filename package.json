@@ -1,0 +1,32 @@
+{
+  "name": "profile-metrics",
+  "version": "1.0.0",
+  "description": "An image generator to display stats about your GitHub account and render them!",
+  "main": "src/server/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kode-blox/profile-metrics.git"
+  },
+  "author": "Sayak Mukhopadhyay",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "compression": "^1.8.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@eslint/css": "^0.8.1",
+    "@eslint/js": "^9.27.0",
+    "@eslint/json": "^0.12.0",
+    "@eslint/markdown": "^6.4.0",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-vue": "^10.1.0",
+    "globals": "^16.1.0",
+    "prettier": "^3.5.3"
+  }
+}
