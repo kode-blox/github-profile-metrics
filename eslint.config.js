@@ -4,7 +4,7 @@ import pluginVue from "eslint-plugin-vue";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
 import css from "@eslint/css";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
@@ -13,6 +13,7 @@ export default defineConfig([
     plugins: { js },
     extends: ["js/recommended"],
   },
+  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
   {
     files: ["**/*.{js,mjs,cjs,vue}"],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
