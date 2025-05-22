@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-import { config as dotenvConfig } from 'dotenv'
-import { readFileSync } from 'fs'
-import packageJson from '../../package.json' with { type: 'json' }
+const API_ROOT = ''
 
-dotenvConfig()
-
-const config = {
-  port: parseInt(process.env.PORT || '3000'),
-  version: packageJson.version,
-  modes: process.env.MODES.split(','),
-  githubAppId: process.env.GITHUB_APP_ID,
-  githubClientId: process.env.GITHUB_CLIENT_ID,
-  githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-  githubKey: readFileSync(process.env.GITHUB_KEY, 'utf8')
+export const apiRoutes = {
+  config: () => `${API_ROOT}/config`,
 }
-
-export default config

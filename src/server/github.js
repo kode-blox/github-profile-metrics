@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-import { config as dotenvConfig } from 'dotenv'
-import { readFileSync } from 'fs'
-import packageJson from '../../package.json' with { type: 'json' }
+import { OAuthApp } from '@octokit/oauth-app'
+import config from './config.js'
 
-dotenvConfig()
+const app= new OAuthApp({
+    clientId: config.githubClientId,
+    clientSecret: config.githubClientSecret,
+})
 
-const config = {
-  port: parseInt(process.env.PORT || '3000'),
-  version: packageJson.version,
-  modes: process.env.MODES.split(','),
-  githubAppId: process.env.GITHUB_APP_ID,
-  githubClientId: process.env.GITHUB_CLIENT_ID,
-  githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-  githubKey: readFileSync(process.env.GITHUB_KEY, 'utf8')
-}
-
-export default config
+export default app

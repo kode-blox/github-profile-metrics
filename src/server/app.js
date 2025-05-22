@@ -17,14 +17,26 @@
 import express from 'express'
 import compression from 'compression'
 import { createServer } from 'http'
+import cors from 'cors'
+import { createNodeMiddleware } from '@octokit/oauth-app'
 
 import config from './config.js'
+import githubClient from './github.js'
+
+import configData from './routes/config.js'
 
 let app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(compression())
+app.use(createNodeMiddleware(githubClient))
+
+if (app.get('env') === 'development') {
+  app.use(cors())
+}
+
+app.use('/api/config', configData)
 
 let port = validatePort(config.port)
 app.set('port', port)

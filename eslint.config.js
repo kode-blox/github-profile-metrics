@@ -12,6 +12,14 @@ export default defineConfig([
     files: ["**/*.{js,mjs,cjs,vue}"],
     plugins: { js },
     extends: ["js/recommended"],
+    rules: {
+      "no-unused-vars": [
+        "error",
+        {
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
   },
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
   {
