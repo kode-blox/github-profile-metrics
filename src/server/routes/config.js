@@ -21,6 +21,6 @@ import config from '../config.js'
 const router = Router()
 
 export default router.get('/', (req, res) => {
-  const { githubClientSecret, githubKey, ...otherConfig } = config
+  const { githubClientSecret, githubKey, githubPat, ...otherConfig } = config
   res.send(otherConfig)
 })

@@ -29,6 +29,7 @@ const config = {
   githubClientId: process.env.GITHUB_CLIENT_ID,
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
   githubKey: readFileSync(process.env.GITHUB_KEY, 'utf8'),
+  githubPat: process.env.GITHUB_PAT,
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   sessionSecret: process.env.SESSION_SECRET
 }

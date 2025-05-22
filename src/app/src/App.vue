@@ -43,7 +43,7 @@ const isAuthenticated = computed(() => {
     <v-app-bar>
       <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="!isAuthenticated" color="primary" :href="githubStore.getGithubLoginUrl()"> Login with GitHub </v-btn>
+      <v-btn v-if="!isAuthenticated" color="primary" :href="githubStore.getLoginUrl()"> Login with GitHub </v-btn>
 
       <div v-else class="d-flex align-center">
         <v-avatar size="32" class="mr-2">

@@ -20,6 +20,7 @@ import api from '@/api/index.js'
 
 export const useGithubStore = defineStore('github', () => {
   const user = ref(null)
+  const rateLimits = ref(null)
 
   async function fetchUser() {
     try {
@@ -39,16 +40,27 @@ export const useGithubStore = defineStore('github', () => {
     }
   }
 
-  function getGithubLoginUrl() {
-    const loginUrl = new URL(api.getGithubLoginUrl())
+  function getLoginUrl() {
+    const loginUrl = new URL(api.getLoginUrl())
     loginUrl.searchParams.set('originUrl', window.location.href)
-    return  loginUrl.toString()
+    return loginUrl.toString()
+  }
+
+  async function fetchRateLimits() {
+    try {
+      rateLimits.value = await api.getGithubRateLimits()
+    } catch (error) {
+      console.error('Error fetching github rate limits:', error)
+      rateLimits.value = null
+    }
   }
 
   return {
     user,
+    rateLimits,
     fetchUser,
     logout,
-    getGithubLoginUrl,
+    getLoginUrl,
+    fetchRateLimits,
   }
 })

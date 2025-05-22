@@ -29,13 +29,18 @@ async function getGithubUser() {
   return (await apiAxiosInstance.get(apiRoutes.github.user())).data
 }
 
-async function githubLogout() {
-  await apiAxiosInstance.get(apiRoutes.github.logout())
+function githubLogout() {
+  apiAxiosInstance.get(apiRoutes.github.logout())
+}
+
+async function getGithubRateLimits() {
+  return (await apiAxiosInstance.get(apiRoutes.github.rateLimits())).data
 }
 
 export default {
   fetchConfig,
-  getGithubLoginUrl,
+  getLoginUrl: getGithubLoginUrl,
   getGithubUser,
   githubLogout,
+  getGithubRateLimits,
 }

@@ -15,12 +15,14 @@
  */
 
 const API_ROOT = ''
+const GITHUB_API_ROOT = `${API_ROOT}/github`
 
 export const apiRoutes = {
   config: () => `${API_ROOT}/config`,
   github: {
-    login: () => `${API_ROOT}/github/oauth/login`,
-    user: () => `${API_ROOT}/github/user`,
-    logout: () => `${API_ROOT}/github/logout`,
+    login: () => `${GITHUB_API_ROOT}/oauth/login`,
+    user: () => `${GITHUB_API_ROOT}/user`,
+    logout: () => `${GITHUB_API_ROOT}/logout`,
+    rateLimits: () => `${GITHUB_API_ROOT}/rate_limits`,
   },
 }

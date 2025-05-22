@@ -19,6 +19,7 @@ import { nanoid } from 'nanoid'
 import { Octokit } from 'octokit'
 
 import { githubClient, redirectUrlRoot } from '../github.js'
+import config from '../config.js'
 
 const router = Router()
 
@@ -100,6 +101,14 @@ router.get('/logout', (req, res) => {
     }
     res.clearCookie('connect.sid').status(204).end()
   })
+})
+
+router.get('/rate_limits', async (req, res) => {
+  let rateLimits
+  const token = !req.session?.token ? config.githubPat : req.session.token
+  const octokit = new Octokit({ auth: token })
+  rateLimits = (await octokit.rest.rateLimit.get()).data
+  res.status(200).json(rateLimits)
 })
 
 export default router

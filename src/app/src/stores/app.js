@@ -16,14 +16,22 @@
 
 import { defineStore } from 'pinia'
 import api from '@/api/index.js'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
   const config = ref('')
+
+  const preview = computed(() => {
+    return /-preview$/.test(config.value.version)
+  })
+
+  const beta = computed(() => {
+    return /-beta$/.test(config.value.version)
+  })
 
   async function fetchConfig() {
     config.value = await api.fetchConfig()
   }
 
-  return { config, fetchConfig }
+  return { config, preview, beta, fetchConfig }
 })

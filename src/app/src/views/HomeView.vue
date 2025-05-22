@@ -15,15 +15,69 @@
   -->
 
 <script setup>
+import { computed, onMounted } from 'vue'
 import { useAppStore } from '@/stores/app'
+import { useGithubStore } from '@/stores/github.js'
 
 const appStore = useAppStore()
+const githubStore = useGithubStore()
+
+onMounted(async () => {
+  githubStore.fetchRateLimits()
+})
+
+const rateLimitColor = computed(() => {
+  if (!githubStore.rateLimits) {
+    return 'info'
+  }
+  const rest = githubStore.rateLimits.resources.core
+  const graphql = githubStore.rateLimits.resources.graphql
+  const search = githubStore.rateLimits.resources.search
+
+  if (
+    rest.remaining / rest.limit < 0.1 ||
+    graphql.remaining / graphql.limit < 0.1 ||
+    search.remaining / search.remaining < 0.1
+  ) {
+    return 'error'
+  } else if (
+    rest.remaining / rest.limit < 0.5 ||
+    graphql.remaining / graphql.limit < 0.5 ||
+    search.remaining / search.remaining < 0.5
+  ) {
+    return 'warning'
+  } else {
+    return 'success'
+  }
+})
+
+const rateLimited = computed(() => {
+  if (!githubStore.rateLimits) {
+    return false
+  }
+  const rest = githubStore.rateLimits.resources.core
+  const graphql = githubStore.rateLimits.resources.graphql
+  const search = githubStore.rateLimits.resources.search
+
+  return rest.remaining === 0 || graphql.remaining === 0 || search.remaining === 0
+})
+
+const rateLimitReset = computed(() => {
+  if (!githubStore.rateLimits) {
+    return null
+  }
+  const rest = githubStore.rateLimits.resources.core
+  const graphql = githubStore.rateLimits.resources.graphql
+  const search = githubStore.rateLimits.resources.search
+
+  return new Date(Math.max(rest.reset, graphql.reset, search.reset))
+})
 </script>
 
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="4">
+      <v-col xl="4" lg="6" md="8" sm="10">
         <v-card variant="outlined" v-if="appStore.config.modes?.includes('embed')" class="mt-6 mb-6">
           <v-card-item>
             <v-card-title>Create your own metrics</v-card-title>
@@ -66,23 +120,28 @@ const appStore = useAppStore()
           </v-card-actions>
         </v-card>
 
-        <v-alert color="warning" variant="outlined">
-          Metrics are rendered by <a href="https://profilemetrics.kodeblox.com/">profilemetrics.kodeblox.com</a> in preview mode.<br />
+        <v-alert color="warning" variant="outlined" v-if="appStore.preview">
+          Metrics are rendered by <a href="https://profilemetrics.kodeblox.com/">profilemetrics.kodeblox.com</a> in
+          preview mode.
+          <br />
           Any backend changes won't be reflected but client-side rendering can still be tested.
         </v-alert>
 
-        <v-alert color="warning" variant="outlined">
-          This web instance has run out of GitHub API requests. Please wait until {{ rlreset }} to generate metrics
-          again.
+        <v-alert :color="rateLimitColor" variant="outlined">
+          <template v-if="rateLimited">
+            This web instance has run out of GitHub API requests. Please wait until {{ rateLimitReset }} to generate
+            metrics again.
+          </template>
+          <small>
+            Remaining GitHub requests
+            <template v-if="githubStore.user"> for {{ githubStore.user.login }} </template>
+            : {{ githubStore.rateLimits?.resources.core.remaining }} REST /
+            {{ githubStore.rateLimits?.resources.graphql.remaining }} GraphQL /
+            {{ githubStore.rateLimits?.resources.search.remaining }} search
+          </small>
         </v-alert>
 
         <section>
-<!--          <small :class="{ 'error-text': !requests.rest.remaining || !requests.graphql.remaining }">-->
-<!--            Remaining GitHub requests-->
-<!--            <span v-if="requests.login"> for {{ requests.login }}</span>-->
-<!--            : {{ requests.rest.remaining }} REST / {{ requests.graphql.remaining }} GraphQL /-->
-<!--            {{ requests.search.remaining }} search-->
-<!--          </small>-->
           <small>
             Send feedback on
             <a href="https://github.com/kode-blox/profile-metrics/discussions" target="_blank">GitHub discussions</a>
