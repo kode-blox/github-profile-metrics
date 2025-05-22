@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-import { apiAxiosInstance } from './axiosInstance'
-import { apiRoutes } from './route'
+import { createClient } from 'redis'
+import { RedisStore } from 'connect-redis'
+import config from './config.js'
 
-async function fetchConfig() {
-  return (await apiAxiosInstance.get(apiRoutes.config())).data
-}
+const redisClient = createClient({ url: config.redisUrl })
+redisClient.connect()
 
-function getGithubLoginUrl() {
-  return apiAxiosInstance.defaults.baseURL + apiRoutes.github.login()
-}
-
-async function getGithubUser() {
-  return (await apiAxiosInstance.get(apiRoutes.github.user())).data
-}
-
-async function githubLogout() {
-  await apiAxiosInstance.get(apiRoutes.github.logout())
-}
-
-export default {
-  fetchConfig,
-  getGithubLoginUrl,
-  getGithubUser,
-  githubLogout,
-}
+export default new RedisStore({
+  client: redisClient,
+  prefix: 'profile-metrics:',
+})

@@ -18,4 +18,9 @@ const API_ROOT = ''
 
 export const apiRoutes = {
   config: () => `${API_ROOT}/config`,
+  github: {
+    login: () => `${API_ROOT}/github/oauth/login`,
+    user: () => `${API_ROOT}/github/user`,
+    logout: () => `${API_ROOT}/github/logout`,
+  },
 }

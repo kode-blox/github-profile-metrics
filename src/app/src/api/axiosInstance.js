@@ -18,6 +18,9 @@ import axios from 'axios'
 
 let baseURL = import.meta.env.VITE_APP_SERVER + import.meta.env.VITE_APP_API_ENDPOINT
 
-const apiAxiosInstance = axios.create({ baseURL })
+const apiAxiosInstance = axios.create({
+  baseURL,
+  withCredentials: true,
+})
 
 export { apiAxiosInstance }

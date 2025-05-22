@@ -24,10 +24,13 @@ const config = {
   port: parseInt(process.env.PORT || '3000'),
   version: packageJson.version,
   modes: process.env.MODES.split(','),
+  domain: process.env.DOMAIN || 'localhost',
   githubAppId: process.env.GITHUB_APP_ID,
   githubClientId: process.env.GITHUB_CLIENT_ID,
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-  githubKey: readFileSync(process.env.GITHUB_KEY, 'utf8')
+  githubKey: readFileSync(process.env.GITHUB_KEY, 'utf8'),
+  redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
+  sessionSecret: process.env.SESSION_SECRET
 }
 
 export default config

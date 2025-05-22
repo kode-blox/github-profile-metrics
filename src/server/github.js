@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { OAuthApp } from '@octokit/oauth-app'
+import { OAuthApp } from 'octokit'
 import config from './config.js'
 
-const app= new OAuthApp({
-    clientId: config.githubClientId,
-    clientSecret: config.githubClientSecret,
-})
+export const redirectUrlRoot =
+  process.env.NODE_ENV === 'production' ? `https://${config.domain}` : `http://${config.domain}:${config.port}`
 
-export default app
+export const githubClient = new OAuthApp({
+  clientId: config.githubClientId,
+  clientSecret: config.githubClientSecret,
+  redirectUrl: new URL('/api/github/oauth/callback', redirectUrlRoot).toString(),
+})

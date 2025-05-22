@@ -19,15 +19,22 @@ import { RouterView } from 'vue-router'
 import { computed, onMounted } from 'vue'
 
 import { useAppStore } from '@/stores/app'
+import { useGithubStore } from '@/stores/github'
 
 const appStore = useAppStore()
+const githubStore = useGithubStore()
 
-onMounted(() => {
+onMounted(async () => {
   appStore.fetchConfig()
+  githubStore.fetchUser()
 })
 
 const pageTitle = computed(() => {
   return `${document.title} ${appStore.config.version}`
+})
+
+const isAuthenticated = computed(() => {
+  return !!githubStore.user
 })
 </script>
 
@@ -35,6 +42,16 @@ const pageTitle = computed(() => {
   <v-app id="inspire">
     <v-app-bar>
       <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
+      <v-spacer></v-spacer>
+      <v-btn v-if="!isAuthenticated" color="primary" :href="githubStore.getGithubLoginUrl()"> Login with GitHub </v-btn>
+
+      <div v-else class="d-flex align-center">
+        <v-avatar size="32" class="mr-2">
+          <v-img :src="githubStore.user.avatar_url" alt="User Avatar"></v-img>
+        </v-avatar>
+        <span class="mr-2">{{ githubStore.user.name || githubStore.user.login }}</span>
+        <v-btn color="error" variant="text" @click="githubStore.logout">Logout</v-btn>
+      </div>
     </v-app-bar>
 
     <v-main>
@@ -50,66 +67,4 @@ const pageTitle = computed(() => {
   </v-app>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
+<style scoped></style>

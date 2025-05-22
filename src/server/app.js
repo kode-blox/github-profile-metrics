@@ -18,25 +18,44 @@ import express from 'express'
 import compression from 'compression'
 import { createServer } from 'http'
 import cors from 'cors'
-import { createNodeMiddleware } from '@octokit/oauth-app'
 
 import config from './config.js'
-import githubClient from './github.js'
+import redisStore from './redis.js'
 
-import configData from './routes/config.js'
+import configRoutes from './routes/config.js'
+import githubRoutes from './routes/github.js'
+import session from 'express-session'
 
 let app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(compression())
-app.use(createNodeMiddleware(githubClient))
+app.use(
+  session({
+    store: redisStore,
+    secret: config.sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
+  }),
+)
 
 if (app.get('env') === 'development') {
-  app.use(cors())
+  app.use(
+    cors({
+      origin: /^http:\/\/localhost.*/,
+      credentials: true,
+    }),
+  )
 }
 
-app.use('/api/config', configData)
+app.use('/api/config', configRoutes)
+app.use('/api/github', githubRoutes)
 
 let port = validatePort(config.port)
 app.set('port', port)
