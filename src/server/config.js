@@ -25,13 +25,19 @@ const config = {
   version: packageJson.version,
   modes: process.env.MODES.split(','),
   domain: process.env.DOMAIN || 'localhost',
-  githubAppId: process.env.GITHUB_APP_ID,
-  githubClientId: process.env.GITHUB_CLIENT_ID,
-  githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-  githubKey: readFileSync(process.env.GITHUB_KEY, 'utf8'),
-  githubPat: process.env.GITHUB_PAT,
+  hosted: {
+    by: process.env.HOSTED_BY,
+    link: process.env.HOSTED_LINK,
+  },
+  github: {
+    appId: process.env.GITHUB_APP_ID,
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    privateKey: readFileSync(process.env.GITHUB_PRIVATE_KEY, 'utf8'),
+    pat: process.env.GITHUB_PAT,
+  },
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
-  sessionSecret: process.env.SESSION_SECRET
+  sessionSecret: process.env.SESSION_SECRET,
 }
 
 export default config

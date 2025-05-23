@@ -43,7 +43,7 @@ const isAuthenticated = computed(() => {
     <v-app-bar>
       <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="!isAuthenticated" color="primary" :href="githubStore.getLoginUrl()"> Login with GitHub </v-btn>
+      <v-btn v-if="!isAuthenticated" color="primary" :href="githubStore.getLoginUrl()">Login with GitHub</v-btn>
 
       <div v-else class="d-flex align-center">
         <v-avatar size="32" class="mr-2">
@@ -62,7 +62,10 @@ const isAuthenticated = computed(() => {
       <v-btn variant="text" href="https://github.com/kode-blox/profile-metrics" slim flat>Repository</v-btn>
       <v-btn variant="text" href="https://github.com/kode-blox/profile-metrics/blob/main/LICENSE" slim>License</v-btn>
       <v-btn variant="text" href="https://github.com/marketplace/actions/profile-metrics" slim>GitHub Action</v-btn>
-      <span>Hosted with ❤️</span>
+      <span>
+        Hosted with ❤️ by
+        <a :href="appStore.config.hosted?.link">{{ appStore.config.hosted?.by }}</a>
+      </span>
     </v-footer>
   </v-app>
 </template>

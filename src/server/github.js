@@ -14,14 +14,52 @@
  * limitations under the License.
  */
 
-import { OAuthApp } from 'octokit'
+import { App } from 'octokit'
+import _ from 'lodash'
 import config from './config.js'
 
 export const redirectUrlRoot =
   process.env.NODE_ENV === 'production' ? `https://${config.domain}` : `http://${config.domain}:${config.port}`
 
-export const githubClient = new OAuthApp({
-  clientId: config.githubClientId,
-  clientSecret: config.githubClientSecret,
+export const githubClient = new App({
+  oauth: {
+    clientId: config.github.clientId,
+    clientSecret: config.github.clientSecret,
+  },
+  appId: config.github.appId,
+  privateKey: config.github.privateKey,
   redirectUrl: new URL('/api/github/oauth/callback', redirectUrlRoot).toString(),
 })
+
+/**
+ * Check if the token is expired and refresh it if needed
+ *
+ * @param tokens
+ * @returns {Promise<{ token: string; expiresAt: string; refreshToken: string; refreshTokenExpiresAt: string } | null>}
+ */
+export async function checkAndRefreshToken(tokens) {
+  const now = new Date()
+
+  if (new Date(tokens.expiresAt) > now) {
+    return tokens
+  }
+
+  if (new Date(tokens.refreshTokenExpiresAt) > now) {
+    const refreshToken = await githubClient.oauth.refreshToken({
+      refreshToken: tokens.refreshToken,
+    })
+    return getTokensFromAuthentication(refreshToken.authentication)
+  }
+
+  return null
+}
+
+/**
+ * Get only the token properties from the authentication obejct
+ *
+ * @param authentication
+ * @returns {{ token: string; expiresAt: string; refreshToken: string; refreshTokenExpiresAt: string }}
+ */
+export function getTokensFromAuthentication(authentication) {
+  return _.pick(authentication, ['token', 'expiresAt', 'refreshToken', 'refreshTokenExpiresAt'])
+}

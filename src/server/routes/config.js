@@ -15,12 +15,20 @@
  */
 
 import { Router } from 'express'
+import _ from 'lodash'
 
 import config from '../config.js'
 
 const router = Router()
 
 export default router.get('/', (req, res) => {
-  const { githubClientSecret, githubKey, githubPat, ...otherConfig } = config
-  res.send(otherConfig)
+  const responseConfig = _.omit(config, [
+    'github.clientSecret',
+    'github.key',
+    'github.pat',
+    'redisUrl',
+    'sessionSecret',
+  ])
+
+  res.send(responseConfig)
 })

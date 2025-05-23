@@ -121,8 +121,9 @@ const rateLimitReset = computed(() => {
         </v-card>
 
         <v-alert color="warning" variant="outlined" v-if="appStore.preview">
-          Metrics are rendered by <a href="https://profilemetrics.kodeblox.com/">profilemetrics.kodeblox.com</a> in
-          preview mode.
+          Metrics are rendered by
+          <a href="https://profilemetrics.kodeblox.com/">profilemetrics.kodeblox.com</a>
+          in preview mode.
           <br />
           Any backend changes won't be reflected but client-side rendering can still be tested.
         </v-alert>
@@ -134,7 +135,7 @@ const rateLimitReset = computed(() => {
           </template>
           <small>
             Remaining GitHub requests
-            <template v-if="githubStore.user"> for {{ githubStore.user.login }} </template>
+            <template v-if="githubStore.user">for {{ githubStore.user.login }}</template>
             : {{ githubStore.rateLimits?.resources.core.remaining }} REST /
             {{ githubStore.rateLimits?.resources.graphql.remaining }} GraphQL /
             {{ githubStore.rateLimits?.resources.search.remaining }} search
