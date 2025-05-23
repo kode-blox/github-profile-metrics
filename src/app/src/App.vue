@@ -81,4 +81,20 @@ const isAuthenticated = computed(() => {
   </v-app>
 </template>
 
-<style scoped></style>
+<style>
+/* Add transition for theme color changes */
+:root {
+  --theme-transition-duration: 1s;
+}
+
+/* Apply transitions to all elements that might change color with theme */
+
+.v-application,
+.v-application * {
+  transition:
+    color var(--theme-transition-duration) ease,
+    background-color var(--theme-transition-duration) ease,
+    border-color var(--theme-transition-duration) ease,
+    box-shadow var(--theme-transition-duration) ease !important;
+}
+</style>
