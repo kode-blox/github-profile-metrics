@@ -20,9 +20,20 @@ import { computed, onMounted } from 'vue'
 
 import { useAppStore } from '@/stores/app'
 import { useGithubStore } from '@/stores/github'
+import { useTheme } from 'vuetify'
 
 const appStore = useAppStore()
 const githubStore = useGithubStore()
+
+// Handle themes and auto-switching
+const vuetifyTheme = useTheme()
+const themeMediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
+
+themeMediaQueryList.onchange = (event) => {
+  vuetifyTheme.global.name.value = event.matches ? 'dark' : 'light'
+}
+
+vuetifyTheme.global.name.value = themeMediaQueryList.matches ? 'dark' : 'light'
 
 onMounted(async () => {
   appStore.fetchConfig()
@@ -40,7 +51,7 @@ const isAuthenticated = computed(() => {
 
 <template>
   <v-app id="inspire">
-    <v-app-bar>
+    <v-app-bar :class="{ beta: appStore.beta }">
       <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn v-if="!isAuthenticated" color="primary" :href="githubStore.getLoginUrl()">Login with GitHub</v-btn>
