@@ -30,7 +30,11 @@ async function getGithubUser() {
 }
 
 function githubLogout() {
-  apiAxiosInstance.get(apiRoutes.github.logout())
+  apiAxiosInstance.post(apiRoutes.github.logout())
+}
+
+function githubRevoke() {
+  apiAxiosInstance.post(apiRoutes.github.revoke())
 }
 
 async function getGithubRateLimits() {
@@ -42,5 +46,6 @@ export default {
   getLoginUrl: getGithubLoginUrl,
   getGithubUser,
   githubLogout,
+  githubRevoke,
   getGithubRateLimits,
 }

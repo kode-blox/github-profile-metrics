@@ -23,6 +23,7 @@ export const apiRoutes = {
     login: () => `${GITHUB_API_ROOT}/oauth/login`,
     user: () => `${GITHUB_API_ROOT}/user`,
     logout: () => `${GITHUB_API_ROOT}/logout`,
+    revoke: () => `${GITHUB_API_ROOT}/revoke`,
     rateLimits: () => `${GITHUB_API_ROOT}/rate_limits`,
   },
 }

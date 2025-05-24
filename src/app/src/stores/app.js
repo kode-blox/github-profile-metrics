@@ -15,8 +15,8 @@
  */
 
 import { defineStore } from 'pinia'
-import api from '@/api/index.js'
 import { computed, ref } from 'vue'
+import api from '@/api/index.js'
 
 export const useAppStore = defineStore('app', () => {
   const config = ref('')
@@ -29,9 +29,14 @@ export const useAppStore = defineStore('app', () => {
     return /-beta$/.test(config.value.version)
   })
 
+  const allExtras = computed(() => {
+    // Simple way of deduplicating elements
+    return [...new Set([...(config.value.extras?.features || []), ...(config.value.extras?.logged || [])])]
+  })
+
   async function fetchConfig() {
     config.value = await api.fetchConfig()
   }
 
-  return { config, preview, beta, fetchConfig }
+  return { config, preview, beta, allExtras, fetchConfig }
 })

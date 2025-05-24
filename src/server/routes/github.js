@@ -138,8 +138,26 @@ router.get('/user', async (req, res) => {
   res.json(user.data)
 })
 
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   destroySession(req, res)
+})
+
+router.post('/revoke', async (req, res) => {
+  if (!req.session?.tokens?.token) {
+    return res.status(401).json({ error: 'Not authenticated' })
+  }
+
+  const tokens = await checkAndRefreshToken(req.session.tokens)
+
+  if (!tokens) {
+    return destroySession(req, res, 401, { error: 'Token expired' })
+  }
+
+  const token = checkRefreshed(req, tokens)
+
+  await githubClient.oauth.deleteAuthorization({ token })
+
+  res.status(204).end()
 })
 
 router.get('/rate_limits', async (req, res) => {

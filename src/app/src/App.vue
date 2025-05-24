@@ -43,25 +43,28 @@ onMounted(async () => {
 const pageTitle = computed(() => {
   return `${document.title} ${appStore.config.version}`
 })
-
-const isAuthenticated = computed(() => {
-  return !!githubStore.user
-})
 </script>
 
 <template>
   <v-app id="inspire">
     <v-app-bar :class="{ beta: appStore.beta }">
-      <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
-      <v-spacer></v-spacer>
-      <v-btn v-if="!isAuthenticated" color="primary" :href="githubStore.getLoginUrl()">Login with GitHub</v-btn>
-
-      <div v-else class="d-flex align-center">
-        <v-avatar size="32" class="mr-2">
-          <v-img :src="githubStore.user.avatar_url" alt="User Avatar"></v-img>
+      <v-btn exact icon :to="{ name: 'home' }" :active="false">
+        <v-avatar>
+          <v-img src="@/assets/logo.svg" alt="Profile Metrics Logo" />
         </v-avatar>
-        <span class="mr-2">{{ githubStore.user.name || githubStore.user.login }}</span>
-        <v-btn color="error" variant="text" @click="githubStore.logout">Logout</v-btn>
+      </v-btn>
+      <v-app-bar-title :to="{ name: 'home' }">{{ pageTitle }}</v-app-bar-title>
+      <v-spacer></v-spacer>
+      <v-btn v-if="!githubStore.isAuthenticated" color="primary" :to="{ name: 'github-auth' }">Login with GitHub</v-btn>
+
+      <div v-else>
+        <v-btn :to="{ name: 'github-auth' }" :active="false">
+          <v-avatar size="32" class="mr-2">
+            <v-img :src="githubStore.user.avatar_url" alt="User Avatar"></v-img>
+          </v-avatar>
+          <span>{{ githubStore.user.name || githubStore.user.login }}</span>
+        </v-btn>
+        <v-btn color="error" @click="githubStore.logout">Logout</v-btn>
       </div>
     </v-app-bar>
 
@@ -70,7 +73,7 @@ const isAuthenticated = computed(() => {
     </v-main>
 
     <v-footer class="d-flex align-center justify-center ga-2 flex-wrap flex-grow-1 py-3">
-      <v-btn variant="text" href="https://github.com/kode-blox/profile-metrics" slim flat>Repository</v-btn>
+      <v-btn variant="text" href="https://github.com/kode-blox/profile-metrics" slim>Repository</v-btn>
       <v-btn variant="text" href="https://github.com/kode-blox/profile-metrics/blob/main/LICENSE" slim>License</v-btn>
       <v-btn variant="text" href="https://github.com/marketplace/actions/profile-metrics" slim>GitHub Action</v-btn>
       <span>

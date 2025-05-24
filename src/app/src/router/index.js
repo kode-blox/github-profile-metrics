@@ -16,6 +16,8 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import GithubAuthView from '@/views/GithubAuthView.vue'
+import { useGithubStore } from '@/stores/github.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,14 +28,18 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/github-auth',
+      name: 'github-auth',
+      component: GithubAuthView,
     },
   ],
+})
+
+router.afterEach((to, from) => {
+  const githubStore = useGithubStore()
+  if (to.name === 'github-auth') {
+    githubStore.lastPageBeforeLogin = `${window.location.origin}${from.path}`
+  }
 })
 
 export default router

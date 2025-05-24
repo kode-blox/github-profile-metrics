@@ -30,5 +30,9 @@ export default router.get('/', (req, res) => {
     'sessionSecret',
   ])
 
+  if (req.sessionID) {
+    responseConfig['sessionId'] = req.sessionID
+  }
+
   res.send(responseConfig)
 })

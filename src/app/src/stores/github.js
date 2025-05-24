@@ -15,12 +15,23 @@
  */
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import api from '@/api/index.js'
 
 export const useGithubStore = defineStore('github', () => {
   const user = ref(null)
   const rateLimits = ref(null)
+  const lastPageBeforeLogin = ref(window.location.origin)
+
+  const isAuthenticated = computed(() => {
+    return !!user.value
+  })
+
+  const loginUrl = computed(() => {
+    const loginUrl = new URL(api.getLoginUrl())
+    loginUrl.searchParams.set('originUrl', lastPageBeforeLogin.value)
+    return loginUrl.toString()
+  })
 
   async function fetchUser() {
     try {
@@ -40,10 +51,13 @@ export const useGithubStore = defineStore('github', () => {
     }
   }
 
-  function getLoginUrl() {
-    const loginUrl = new URL(api.getLoginUrl())
-    loginUrl.searchParams.set('originUrl', window.location.href)
-    return loginUrl.toString()
+  async function revoke() {
+    try {
+      await api.githubRevoke()
+    } catch (error) {
+      console.error('Error revoking authorization:', error)
+    }
+    logout()
   }
 
   async function fetchRateLimits() {
@@ -58,9 +72,12 @@ export const useGithubStore = defineStore('github', () => {
   return {
     user,
     rateLimits,
+    lastPageBeforeLogin,
+    isAuthenticated,
+    loginUrl,
     fetchUser,
     logout,
-    getLoginUrl,
+    revoke,
     fetchRateLimits,
   }
 })

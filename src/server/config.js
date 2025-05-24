@@ -23,7 +23,7 @@ dotenvConfig()
 const config = {
   port: parseInt(process.env.PORT || '3000'),
   version: packageJson.version,
-  modes: process.env.MODES.split(','),
+  modes: filterOutEmptyStringInArray(process.env.MODES?.split(',') || []),
   domain: process.env.DOMAIN || 'localhost',
   hosted: {
     by: process.env.HOSTED_BY,
@@ -38,6 +38,14 @@ const config = {
   },
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   sessionSecret: process.env.SESSION_SECRET,
+  extras: {
+    features: filterOutEmptyStringInArray(process.env.EXTRAS_FEATURES?.split(',') || []),
+    logged: filterOutEmptyStringInArray(process.env.EXTRAS_LOGGED?.split(',') || []),
+  },
+}
+
+function filterOutEmptyStringInArray(array) {
+  return array.filter((element) => element !== '')
 }
 
 export default config
